@@ -1,0 +1,136 @@
+{
+  "examId": "ap-statistics",
+  "brandName": "AP Statistics Exam Simulator",
+  "theme": "dark",
+  "logoPath": "../packs/ap-statistics/assets/logo.png?v=1",
+  "accessPassword": "APSTATSREADY",
+  "practiceChunkSize": 10,
+  "nav": [
+    "Home",
+    "Exam Simulator",
+    "Printable Practice Exams"
+  ],
+  "examFormat": {
+    "delivery": "digital",
+    "totalTimeMin": 180,
+    "calculatorPermitted": true,
+    "note": "The simulator provides original independent practice and does not claim to replicate Bluebook exactly."
+  },
+  "sections": [
+    {
+      "id": "mcq",
+      "label": "AP Statistics Multiple-Choice Section",
+      "timeMin": 90,
+      "timeLabel": "Exam time: 90 minutes",
+      "examQuestions": 42,
+      "examWeightPct": 50,
+      "type": "mcq",
+      "autoscore": true,
+      "calculatorPermitted": true,
+      "practiceChunkSize": 10,
+      "examFiles": []
+    },
+    {
+      "id": "frq",
+      "label": "AP Statistics Free-Response Section",
+      "timeMin": 90,
+      "timeLabel": "Exam time: 90 minutes",
+      "examQuestions": 4,
+      "examWeightPct": 50,
+      "type": "frq",
+      "autoscore": false,
+      "calculatorPermitted": true,
+      "practiceChunkSize": 2,
+      "pointsPerQuestion": 10,
+      "examFiles": []
+    }
+  ],
+  "framework": {
+    "effective": "Fall 2026",
+    "units": [
+      {
+        "unit": 1,
+        "name": "Exploring One-Variable Data and Collecting Data"
+      },
+      {
+        "unit": 2,
+        "name": "Probability, Random Variables, and Probability Distributions"
+      },
+      {
+        "unit": 3,
+        "name": "Inference for Categorical Data: Proportions"
+      },
+      {
+        "unit": 4,
+        "name": "Inference for Quantitative Data: Means"
+      },
+      {
+        "unit": 5,
+        "name": "Regression Analysis"
+      }
+    ],
+    "statisticalPractices": [
+      {
+        "practice": 1,
+        "name": "Formulate Questions"
+      },
+      {
+        "practice": 2,
+        "name": "Collect Data"
+      },
+      {
+        "practice": 3,
+        "name": "Analyze Data"
+      },
+      {
+        "practice": 4,
+        "name": "Interpret Results"
+      }
+    ]
+  },
+  "frqStructure": [
+    {
+      "question": 1,
+      "type": "Multi-Focus",
+      "primaryPractices": [
+        1,
+        2
+      ],
+      "points": 10
+    },
+    {
+      "question": 2,
+      "type": "Multi-Focus",
+      "primaryPractices": [
+        3,
+        4
+      ],
+      "points": 10
+    },
+    {
+      "question": 3,
+      "type": "Inference",
+      "focus": "Hypothesis Test or Confidence Interval",
+      "points": 10
+    },
+    {
+      "question": 4,
+      "type": "Multi-Focus",
+      "primaryPractices": [
+        2,
+        3,
+        4
+      ],
+      "points": 10
+    }
+  ],
+  "referenceMaterials": {
+    "enabled": true,
+    "items": [
+      "Formulas",
+      "Statistical tables and reference information"
+    ]
+  },
+  "disclaimer": "This platform contains original AP Statistics practice materials created for independent exam preparation. It is not affiliated with or endorsed by the College Board.",
+  "printables": []
+}

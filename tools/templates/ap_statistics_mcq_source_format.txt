@@ -1,0 +1,78 @@
+AP STATISTICS MCQ SOURCE FORMAT
+================================
+
+IMPORT FILENAME EXAMPLE:
+ap_statistics_mcq_exam_01.txt
+
+REQUIRED:
+- Exactly 42 questions
+- IDs APSTAT-MCQ1-001 through APSTAT-MCQ1-042
+- Choices A-D
+- Exactly one correct answer
+- Correct Answer text must exactly match the selected choice
+- Explanation required
+- Units must use the Fall 2026 five-unit framework
+- Statistical Practices may be included
+- Set-based questions may share Stimulus ID / Stimulus / Dataset / Table
+
+QUESTION EXAMPLE
+----------------
+
+APSTAT-MCQ1-001
+Unit: Unit 1
+Statistical Practices: Practice 3
+Stimulus ID: SET-01
+Stimulus:
+A random sample of students is selected from a school.
+
+Dataset:
+Sample size = 100
+
+Table:
+Category A: 42
+Category B: 58
+
+Prompt:
+Which statement is best supported by the data?
+
+A) Choice A
+B) Choice B
+C) Choice C
+D) Choice D
+
+
+ANSWER KEY FORMAT
+-----------------
+
+PART B — ANSWER KEY + EXPLANATIONS
+
+APSTAT-MCQ1-001 — Correct: A — Correct Answer: Choice A — Explanation: Explain why choice A is correct and why it follows from the statistical information provided.
+
+
+SET-BASED QUESTIONS
+-------------------
+
+For multiple questions using the same context, use the same Stimulus ID.
+
+The complete Stimulus, Dataset, or Table may appear on the first question in
+the set. The importer propagates that shared material to the other questions
+using the same Stimulus ID.
+
+
+VALID UNITS
+-----------
+
+Unit 1: Exploring One-Variable Data and Collecting Data
+Unit 2: Probability, Random Variables, and Probability Distributions
+Unit 3: Inference for Categorical Data: Proportions
+Unit 4: Inference for Quantitative Data: Means
+Unit 5: Regression Analysis
+
+
+STATISTICAL PRACTICES
+---------------------
+
+Practice 1: Formulate Questions
+Practice 2: Collect Data
+Practice 3: Analyze Data
+Practice 4: Interpret Results

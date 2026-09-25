@@ -1,0 +1,115 @@
+AP STATISTICS FRQ SOURCE FORMAT
+================================
+
+IMPORT FILENAME EXAMPLE:
+ap_statistics_frq_exam_01.txt
+
+REQUIRED:
+- Exactly 4 FRQs
+- IDs APSTAT-FRQ1-001 through APSTAT-FRQ1-004
+- Every FRQ = 10 points
+- Complete prompt
+- Subparts when applicable
+- Point Allocation
+- Scoring Guide
+- Model Response or Model Guidance
+
+FRQ 1
+-----
+
+APSTAT-FRQ1-001
+Unit: Unit 1
+Primary Practices: 1, 2
+FRQ Type: Multi-Focus
+Expected Points: 10
+Prompt:
+[Complete FRQ prompt]
+
+Subparts:
+(a) ...
+(b) ...
+
+Point Allocation:
+10 total points. Describe the allocation across the required work.
+
+Scoring Guide:
+[Complete scoring criteria]
+
+Model Response:
+[Complete model response / model guidance]
+
+
+FRQ 2
+-----
+
+APSTAT-FRQ1-002
+Unit: Unit 2
+Primary Practices: 3, 4
+FRQ Type: Multi-Focus
+Expected Points: 10
+Prompt:
+[Complete FRQ prompt]
+
+Subparts:
+(a) ...
+(b) ...
+
+Point Allocation:
+10 total points. Describe the allocation across the required work.
+
+Scoring Guide:
+[Complete scoring criteria]
+
+Model Response:
+[Complete model response / model guidance]
+
+
+FRQ 3
+-----
+
+APSTAT-FRQ1-003
+Unit: Unit 3
+Primary Practices: 4
+FRQ Type: Inference — Hypothesis Test
+Expected Points: 10
+Prompt:
+[Complete inference FRQ prompt]
+
+Subparts:
+(a) ...
+(b) ...
+
+Point Allocation:
+10 total points. Describe the allocation across the required work.
+
+Scoring Guide:
+[Complete scoring criteria]
+
+Model Response:
+[Complete model response / model guidance]
+
+
+FRQ 4
+-----
+
+APSTAT-FRQ1-004
+Unit: Unit 5
+Primary Practices: 2, 3, 4
+FRQ Type: Multi-Focus
+Expected Points: 10
+Prompt:
+[Complete multi-focus FRQ prompt covering multiple content areas as appropriate]
+
+Subparts:
+(a) ...
+(b) ...
+(c) ...
+
+Point Allocation:
+10 total points. Describe the allocation across the required work.
+
+Scoring Guide:
+[Complete scoring criteria]
+
+Model Response:
+[Complete model response / model guidance]
