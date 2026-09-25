@@ -28,7 +28,9 @@
       "autoscore": true,
       "calculatorPermitted": true,
       "practiceChunkSize": 10,
-      "examFiles": []
+      "examFiles": [
+        "ap_statistics_mcq_exam_01.json"
+      ]
     },
     {
       "id": "frq",
@@ -42,7 +44,9 @@
       "calculatorPermitted": true,
       "practiceChunkSize": 2,
       "pointsPerQuestion": 10,
-      "examFiles": []
+      "examFiles": [
+        "ap_statistics_frq_exam_01.json"
+      ]
     }
   ],
   "framework": {
@@ -132,5 +136,14 @@
     ]
   },
   "disclaimer": "This platform contains original AP Statistics practice materials created for independent exam preparation. It is not affiliated with or endorsed by the College Board.",
-  "printables": []
+  "printables": [
+    {
+      "label": "AP Statistics MCQ Practice Exam 01",
+      "file": "ap_statistics_mcq_exam_01.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 02",
+      "file": "ap_statistics_frq_exam_01.pdf"
+    }
+  ]
 }

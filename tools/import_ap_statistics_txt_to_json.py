@@ -39,9 +39,9 @@ CHOICE_RE = re.compile(
 )
 
 KEY_RE = re.compile(
-    r"^(APSTAT-MCQ(\d+)-\d{3})\s+[—–-]\s*"
-    r"Correct:\s*([A-D])\s+[—–-]\s*"
-    r"Correct Answer:\s*(.*?)\s+[—–-]\s*"
+    r"^(APSTAT-MCQ(\d+)-\d{3})\s*(?:[—–-]|,)\s*"
+    r"Correct:\s*([A-D])\s*(?:[—–-]|,)\s*"
+    r"Correct Answer:\s*(.*?)\s*(?:[—–-]|,)\s*"
     r"Explanation:\s*(.+)$",
     re.I,
 )
@@ -57,6 +57,8 @@ UNITS = {
 
 
 FIELDS = {
+    "section": "section",
+    "type": "type",
     "unit": "unit",
     "primary unit": "primaryUnit",
     "secondary unit": "secondaryUnit",
@@ -87,6 +89,9 @@ FIELDS = {
     "subparts": "subparts",
 
     "frq type": "frqType",
+    "question type": "frqType",
+
+    "point breakdown": "pointAllocation",
 
     "correct": "correct",
     "answer": "correct",
@@ -155,6 +160,27 @@ def nm(value):
         line.rstrip()
         for line in lines
     ).strip()
+
+
+
+def strip_trailing_nonimport(text):
+    lines = text.splitlines()
+
+    for index, line in enumerate(lines):
+        normalized = " ".join(line.upper().split())
+
+        markers = (
+            "DO NOT IMPORT",
+            "DO-NOT-IMPORT",
+            "DO_NOT_IMPORT",
+            "DO-NOT-REPEAT BANK UPDATE",
+            "DO NOT REPEAT BANK UPDATE",
+        )
+
+        if any(marker in normalized for marker in markers):
+            return "\n".join(lines[:index]).rstrip() + "\n"
+
+    return text
 
 
 def file_info(path):
@@ -318,6 +344,16 @@ def parse_block(
 
     for raw in lines:
         stripped = raw.strip()
+
+        if (
+            kind == "FRQ"
+            and re.match(
+                r"^[·•-]\s*APSTAT-FRQ\d+-\d{3}\s*:",
+                stripped,
+                re.I,
+            )
+        ):
+            break
 
         if not stripped:
             if (
@@ -912,16 +948,26 @@ def validate_mcq(
     return errors
 
 
-def frq_class(raw):
-    text = ns(raw).lower()
+def derive_point_allocation(scoring_guide):
+    rows = re.findall(
+        r"(?im)^\s*(\([a-z]\))\s+(\d+)\s+points?\s*$",
+        scoring_guide or "",
+    )
 
-    if "inference" in text:
-        return "inference"
+    if not rows:
+        return "", []
 
-    if "multi" in text:
-        return "multi-focus"
+    parsed = [
+        (label, int(points))
+        for label, points in rows
+    ]
 
-    return ""
+    text = "\n".join(
+        f"{label} {points} point{'s' if points != 1 else ''}"
+        for label, points in parsed
+    )
+
+    return text, parsed
 
 
 def validate_frq(
@@ -949,8 +995,7 @@ def validate_frq(
     if len(items) != 4:
         errors.append(
             f"{label}: expected exactly "
-            f"4 FRQs, found "
-            f"{len(items)}"
+            f"4 FRQs, found {len(items)}"
         )
 
     if ids != expected:
@@ -962,32 +1007,27 @@ def validate_frq(
         )
 
     structure = {
-        1: (
-            "multi-focus",
-            {1, 2},
-        ),
-
-        2: (
-            "multi-focus",
-            {3, 4},
-        ),
-
-        3: (
-            "inference",
-            None,
-        ),
-
-        4: (
-            "multi-focus",
-            {2, 3, 4},
-        ),
+        1: {
+            "type": "Multi-Focus",
+            "practices": [1, 2],
+        },
+        2: {
+            "type": "Multi-Focus",
+            "practices": [3, 4],
+        },
+        3: {
+            "type": "Inference",
+            "practices": None,
+        },
+        4: {
+            "type": "Multi-Focus",
+            "practices": [2, 3, 4],
+        },
     }
 
     for question in items:
         qid = question["id"]
-        number = question[
-            "questionNumber"
-        ]
+        number = question["questionNumber"]
 
         errors += metadata(
             question
@@ -999,37 +1039,94 @@ def validate_frq(
                 "does not match filename"
             )
 
+        if question["section"].upper() != "FRQ":
+            errors.append(
+                f"{qid}: Section must be FRQ"
+            )
+
+        if question["type"].lower() != "frq":
+            errors.append(
+                f"{qid}: Type must be frq"
+            )
+
         if not question["prompt"]:
             errors.append(
                 f"{qid}: missing Prompt"
             )
 
-        if not question[
-            "scoringGuide"
-        ]:
+        if not question["scoringGuide"]:
             errors.append(
-                f"{qid}: missing "
-                "Scoring Guide"
-            )
-
-        if not question[
-            "pointAllocation"
-        ]:
-            errors.append(
-                f"{qid}: missing "
-                "Point Allocation"
+                f"{qid}: missing Scoring Guide"
             )
 
         if not (
             question["modelResponse"]
-            or question[
-                "modelGuidance"
-            ]
+            or question["modelGuidance"]
         ):
             errors.append(
-                f"{qid}: missing "
-                "Model Response or "
-                "Model Guidance"
+                f"{qid}: missing Model Response "
+                "or Model Guidance"
+            )
+
+        expected_spec = structure.get(number)
+
+        if expected_spec is None:
+            errors.append(
+                f"{qid}: unexpected FRQ number"
+            )
+            continue
+
+        source_type = ns(
+            question.get("frqType", "")
+        )
+
+        if not source_type:
+            errors.append(
+                f"{qid}: missing source FRQ Type"
+            )
+
+        if (
+            number == 3
+            and "inference" not in source_type.lower()
+        ):
+            errors.append(
+                f"{qid}: FRQ 3 source type must "
+                "identify statistical inference"
+            )
+
+        if (
+            number in {1, 2, 4}
+            and "inference" in source_type.lower()
+        ):
+            errors.append(
+                f"{qid}: source FRQ Type conflicts "
+                "with required Multi-Focus structure"
+            )
+
+        question["sourceFrqType"] = source_type
+        question["frqType"] = expected_spec["type"]
+
+        expected_practices = expected_spec["practices"]
+
+        if expected_practices is not None:
+            if question["primaryPractices"]:
+                if question["primaryPractices"] != expected_practices:
+                    errors.append(
+                        f"{qid}: primary practices must be "
+                        f"{expected_practices}; found "
+                        f"{question['primaryPractices']}"
+                    )
+            else:
+                question["primaryPractices"] = expected_practices[:]
+
+            if not question["statisticalPractices"]:
+                question["statisticalPractices"] = (
+                    expected_practices[:]
+                )
+
+            question["primaryPracticesRaw"] = ", ".join(
+                str(value)
+                for value in expected_practices
             )
 
         try:
@@ -1040,6 +1137,7 @@ def validate_frq(
                     ]
                 )
             )
+
         except Exception:
             points = None
 
@@ -1049,53 +1147,53 @@ def validate_frq(
                 "must be 10"
             )
 
-        expected_type, expected_practices = (
-            structure.get(
-                number,
-                ("", None),
-            )
+        guide = question["scoringGuide"]
+
+        total_match = re.search(
+            r"(?im)^\s*Total Points:\s*(\d+)\s*$",
+            guide,
         )
 
-        if not question["frqType"]:
+        if not total_match:
             errors.append(
-                f"{qid}: missing FRQ Type"
+                f"{qid}: Scoring Guide must contain "
+                "'Total Points: 10'"
             )
 
-        elif (
-            frq_class(
-                question["frqType"]
-            )
-            != expected_type
-        ):
-            readable = (
-                "Inference"
-                if expected_type
-                == "inference"
-                else "Multi-Focus"
+        elif int(total_match.group(1)) != 10:
+            errors.append(
+                f"{qid}: Scoring Guide Total Points "
+                f"must be 10, found "
+                f"{total_match.group(1)}"
             )
 
-            errors.append(
-                f"{qid}: FRQ Type must "
-                f"be {readable}"
+        derived_allocation, allocation_rows = (
+            derive_point_allocation(guide)
+        )
+
+        if not question["pointAllocation"]:
+            question["pointAllocation"] = (
+                derived_allocation
             )
 
-        if (
-            expected_practices
-            is not None
-            and set(
-                question[
-                    "primaryPractices"
-                ]
-            )
-            != expected_practices
-        ):
+        if not question["pointAllocation"]:
             errors.append(
-                f"{qid}: primary "
-                "practices must be "
-                f"{sorted(expected_practices)}; "
-                f"found "
-                f"{question['primaryPractices']}"
+                f"{qid}: missing Point Allocation "
+                "and no per-part point allocation "
+                "could be derived from Scoring Guide"
             )
+
+        if allocation_rows:
+            allocated_total = sum(
+                points
+                for _, points in allocation_rows
+            )
+
+            if allocated_total != 10:
+                errors.append(
+                    f"{qid}: per-part point allocation "
+                    f"sums to {allocated_total}, not 10"
+                )
 
         question["expectedPoints"] = 10
         question["points"] = 10
@@ -1103,27 +1201,19 @@ def validate_frq(
 
         if (
             question["modelResponse"]
-            and not question[
-                "modelGuidance"
-            ]
+            and not question["modelGuidance"]
         ):
-            question[
-                "modelGuidance"
-            ] = question[
-                "modelResponse"
-            ]
+            question["modelGuidance"] = (
+                question["modelResponse"]
+            )
 
         if (
             question["modelGuidance"]
-            and not question[
-                "modelResponse"
-            ]
+            and not question["modelResponse"]
         ):
-            question[
-                "modelResponse"
-            ] = question[
-                "modelGuidance"
-            ]
+            question["modelResponse"] = (
+                question["modelGuidance"]
+            )
 
     return errors
 
@@ -1134,6 +1224,8 @@ def validate(path):
     text = path.read_text(
         encoding="utf-8-sig"
     )
+
+    text = strip_trailing_nonimport(text)
 
     if kind == "mcq":
         question_text, key_text = (
@@ -2083,7 +2175,7 @@ def self_test():
                     "10 total points",
 
                 "scoringGuide":
-                    "Scoring criteria",
+                    "Total Points: 10\n(a) 10 points\nPoint 1: Scoring criteria",
 
                 "modelResponse":
                     "Model response",
