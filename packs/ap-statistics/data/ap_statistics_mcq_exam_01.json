@@ -1670,7 +1670,7 @@
         "A": "Ha: p ≠ 0.48",
         "B": "Ha: p = 0.48",
         "C": "Ha: p > 0.48",
-        "D": "Ha: p < 0.48\n\nPART B,"
+        "D": "Ha: p < 0.48"
       },
       "correct": "A",
       "correctAnswerText": "Ha: p ≠ 0.48",

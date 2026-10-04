@@ -29,7 +29,18 @@
       "calculatorPermitted": true,
       "practiceChunkSize": 10,
       "examFiles": [
-        "ap_statistics_mcq_exam_01.json"
+        "ap_statistics_mcq_exam_01.json",
+        "ap_statistics_mcq_exam_02.json",
+        "ap_statistics_mcq_exam_03.json",
+        "ap_statistics_mcq_exam_04.json",
+        "ap_statistics_mcq_exam_05.json",
+        "ap_statistics_mcq_exam_06.json",
+        "ap_statistics_mcq_exam_07.json",
+        "ap_statistics_mcq_exam_08.json",
+        "ap_statistics_mcq_exam_09.json",
+        "ap_statistics_mcq_exam_10.json",
+        "ap_statistics_mcq_exam_11.json",
+        "ap_statistics_mcq_exam_12.json"
       ]
     },
     {
@@ -45,7 +56,18 @@
       "practiceChunkSize": 2,
       "pointsPerQuestion": 10,
       "examFiles": [
-        "ap_statistics_frq_exam_01.json"
+        "ap_statistics_frq_exam_01.json",
+        "ap_statistics_frq_exam_02.json",
+        "ap_statistics_frq_exam_03.json",
+        "ap_statistics_frq_exam_04.json",
+        "ap_statistics_frq_exam_05.json",
+        "ap_statistics_frq_exam_06.json",
+        "ap_statistics_frq_exam_07.json",
+        "ap_statistics_frq_exam_08.json",
+        "ap_statistics_frq_exam_09.json",
+        "ap_statistics_frq_exam_10.json",
+        "ap_statistics_frq_exam_11.json",
+        "ap_statistics_frq_exam_12.json"
       ]
     }
   ],
@@ -144,6 +166,94 @@
     {
       "label": "AP Statistics FRQ Practice Exam 02",
       "file": "ap_statistics_frq_exam_01.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 03",
+      "file": "ap_statistics_mcq_exam_02.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 04",
+      "file": "ap_statistics_frq_exam_02.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 05",
+      "file": "ap_statistics_mcq_exam_03.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 06",
+      "file": "ap_statistics_frq_exam_03.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 07",
+      "file": "ap_statistics_mcq_exam_04.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 08",
+      "file": "ap_statistics_frq_exam_04.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 09",
+      "file": "ap_statistics_mcq_exam_05.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 10",
+      "file": "ap_statistics_frq_exam_05.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 11",
+      "file": "ap_statistics_mcq_exam_06.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 12",
+      "file": "ap_statistics_frq_exam_06.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 13",
+      "file": "ap_statistics_mcq_exam_07.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 14",
+      "file": "ap_statistics_frq_exam_07.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 15",
+      "file": "ap_statistics_mcq_exam_08.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 16",
+      "file": "ap_statistics_frq_exam_08.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 17",
+      "file": "ap_statistics_mcq_exam_09.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 18",
+      "file": "ap_statistics_frq_exam_09.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 19",
+      "file": "ap_statistics_mcq_exam_10.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 20",
+      "file": "ap_statistics_frq_exam_10.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 21",
+      "file": "ap_statistics_mcq_exam_11.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 22",
+      "file": "ap_statistics_frq_exam_11.pdf"
+    },
+    {
+      "label": "AP Statistics MCQ Practice Exam 23",
+      "file": "ap_statistics_mcq_exam_12.pdf"
+    },
+    {
+      "label": "AP Statistics FRQ Practice Exam 24",
+      "file": "ap_statistics_frq_exam_12.pdf"
     }
   ]
 }

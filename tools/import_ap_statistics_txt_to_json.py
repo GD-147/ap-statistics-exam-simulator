@@ -125,6 +125,8 @@ MULTI = {
 
 
 KEY_HEADINGS = [
+    "PART B, ANSWER KEY AND EXPLANATIONS",
+    "PART B, ANSWER KEY + EXPLANATIONS",
     "PART B — ANSWER KEY + EXPLANATIONS",
     "PART B – ANSWER KEY + EXPLANATIONS",
     "PART B - ANSWER KEY + EXPLANATIONS",
@@ -495,6 +497,17 @@ def parse_block(
 
 def parse_questions(text):
     lines = text.splitlines()
+
+    stimulus_re = re.compile(
+        r"^Questions?\s+"
+        r"(APSTAT-MCQ(\d+)-(\d{3}))\s+"
+        r"(?:to|through|[-–—])\s+"
+        r"(APSTAT-MCQ(\d+)-(\d{3}))\s+"
+        r"refer(?:s)?\s+to\s+the\s+following\s+"
+        r"stimulus\.?$",
+        re.I,
+    )
+
     starts = []
 
     for index, raw in enumerate(lines):
@@ -519,15 +532,108 @@ def parse_questions(text):
             )
         )
 
+    stimulus_ranges = []
+
+    for index, raw in enumerate(lines):
+        match = stimulus_re.fullmatch(
+            ns(raw)
+        )
+
+        if not match:
+            continue
+
+        (
+            start_id,
+            start_exam,
+            start_number,
+            end_id,
+            end_exam,
+            end_number,
+        ) = match.groups()
+
+        start_exam = int(start_exam)
+        end_exam = int(end_exam)
+        start_number = int(start_number)
+        end_number = int(end_number)
+
+        if start_exam != end_exam:
+            raise ValueError(
+                "Shared stimulus crosses exam numbers: "
+                f"{start_id} -> {end_id}"
+            )
+
+        if end_number < start_number:
+            raise ValueError(
+                "Shared stimulus has reversed range: "
+                f"{start_id} -> {end_id}"
+            )
+
+        next_question = len(lines)
+
+        for probe in range(
+            index + 1,
+            len(lines),
+        ):
+            if ID_RE.fullmatch(
+                lines[probe].strip()
+            ):
+                next_question = probe
+                break
+
+        stimulus = nm(
+            "\n".join(
+                lines[
+                    index + 1:
+                    next_question
+                ]
+            )
+        )
+
+        if not stimulus:
+            raise ValueError(
+                f"{start_id} -> {end_id}: "
+                "shared stimulus is empty"
+            )
+
+        stimulus_ranges.append(
+            {
+                "index": index,
+                "exam": start_exam,
+                "start": start_number,
+                "end": end_number,
+                "startId": start_id.upper(),
+                "endId": end_id.upper(),
+                "stimulus": stimulus,
+            }
+        )
+
     output = []
 
     for position, start in enumerate(starts):
         index, qid, kind, exam, number = start
 
         if position + 1 < len(starts):
-            end = starts[position + 1][0]
+            nominal_end = (
+                starts[position + 1][0]
+            )
         else:
-            end = len(lines)
+            nominal_end = len(lines)
+
+        boundaries = [
+            entry["index"]
+            for entry in stimulus_ranges
+            if (
+                index
+                < entry["index"]
+                < nominal_end
+            )
+        ]
+
+        end = (
+            min(boundaries)
+            if boundaries
+            else nominal_end
+        )
 
         output.append(
             parse_block(
@@ -538,6 +644,61 @@ def parse_questions(text):
                 lines[index + 1:end],
             )
         )
+
+    by_id = {
+        item["id"]: item
+        for item in output
+    }
+
+    for entry in stimulus_ranges:
+        stimulus_id = (
+            f"{entry['startId']}"
+            f"_TO_{entry['endId']}"
+        )
+
+        expected_ids = [
+            (
+                f"APSTAT-MCQ"
+                f"{entry['exam']}-"
+                f"{number:03d}"
+            )
+            for number in range(
+                entry["start"],
+                entry["end"] + 1,
+            )
+        ]
+
+        missing = [
+            qid
+            for qid in expected_ids
+            if qid not in by_id
+        ]
+
+        if missing:
+            raise ValueError(
+                "Shared stimulus references "
+                "missing question IDs: "
+                + ", ".join(missing)
+            )
+
+        for qid in expected_ids:
+            question = by_id[qid]
+
+            if not question.get(
+                "stimulusId"
+            ):
+                question[
+                    "stimulusId"
+                ] = stimulus_id
+
+            if not question.get(
+                "stimulus"
+            ):
+                question[
+                    "stimulus"
+                ] = entry[
+                    "stimulus"
+                ]
 
     return output
 
